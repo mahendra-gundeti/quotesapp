@@ -1,0 +1,91 @@
+
+environment: development
+team: platform-team
+version: 1.1.0
+
+image:
+  repository: mahendragundeti/quotesapp
+  tag: 1.1.0
+  pullPolicy: IfNotPresent
+
+
+containerPort: 8080
+replicaCount: 3
+
+
+service:
+  type: ClusterIP
+  port: 80
+
+config:
+  serverPort: "8080"
+  database:
+    host: "" 
+    port: "5432"
+    name: "quotesdb"
+    user: "postgres"
+    sslMode: "require"
+    password: ""
+  extraEnv: {}
+
+
+resources:
+  enabled: true
+  limits:
+    cpu: "1"
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  cpu:
+    enabled: true
+    targetAverageUtilization: 80
+  memory:
+    enabled: true
+    targetAverageUtilization: 80
+
+
+rollingUpdate:
+  maxSurge: 25%
+  maxUnavailable: 0%
+
+
+livenessProbe:
+  enabled: true
+  path: /health/live
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  path: /health/ready
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+podAntiAffinity:
+  enabled: true
+  weight: 100
+
+topologySpreadConstraints:
+  enabled: true
+  maxSkew: 2
+  whenUnsatisfiable: ScheduleAnyway
+
+affinity: {}

@@ -1,0 +1,19 @@
+# Environment files
+.env
+
+# Logs
+*.log
+
+# Docker files
+Dockerfile
+.dockerignore
+docker-compose*.yaml
+
+# Git
+.git
+.gitignore
+README.md
+Makefile
+
+
+mahendragundeti/quotesapp:1.0.0
